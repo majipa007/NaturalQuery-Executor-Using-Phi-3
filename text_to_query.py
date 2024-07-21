@@ -1,7 +1,7 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndBytesConfig
 
 
-class text_to_query:
+class Text_to_query:
     def __init__(self):
         quantization_config = BitsAndBytesConfig(load_in_4bit=True)
 
@@ -30,7 +30,8 @@ class text_to_query:
                         f"NOT NULL,last_name TEXT NOT NULL,email TEXT NOT NULL UNIQUE,phone TEXT NOT NULL UNIQUE)"},
         ]
         output = self.pipe(messages, **self.generation_args)
-        print(output[0]['generated_text'])
+        return output[0]['generated_text']
 
-x = text_to_query()
-x.query("show me the whole data base")
+
+x = Text_to_query()
+print(x.query("show me the whole data base"))
