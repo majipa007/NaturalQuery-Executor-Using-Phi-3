@@ -27,7 +27,6 @@ class Text_to_database:
         # Connect to the database (creates it if it doesn't exist)
         self.conn = sqlite3.connect('your_database.db')
         self.cursor = self.conn.cursor()
-        print("init")
 
     def query(self, inp):
         messages = [
@@ -37,11 +36,9 @@ class Text_to_database:
                         f"NOT NULL,last_name TEXT NOT NULL,email TEXT NOT NULL UNIQUE,phone TEXT NOT NULL UNIQUE)"},
         ]
         output = self.pipe(messages, **self.generation_args)
-        print("query")
         return output[0]['generated_text']
 
     def execute_query(self, query):
-        print("execute")
         try:
             self.cursor.execute(query)
 
@@ -57,17 +54,30 @@ class Text_to_database:
 
 
 @cl.on_chat_start
-def start():
+async def start():
     cl.user_session.set("db", Text_to_database())
+    # Send a welcome message
+    welcome_message = """
+        👋 Welcome to the Text-to-SQL Assistant!
+        
+        Enter your question or description in natural language.
+        
+        For example, you could ask:
+        "Show me all the rows where first name starts with j"
+        "Show me all the name and phone numbers of people where first name starts with j"
+        "insert (20, 'Hitman', 'Dark', 'hitman.dark@email.com', '+1-123-223-4567')"
+        Let's get started! What would you like to know about your contacts database?
+        """
+    await cl.Message(content=welcome_message).send()
 
 
 @cl.on_message
 async def main(message: cl.Message):
     db = cl.user_session.get("db")
-    await cl.Message(content="db variable set").send()
+    # await cl.Message(content="db variable set").send()
     # Generate SQL query
     sql_query = db.query(message.content)
-    await cl.Message(content="query retrieved").send()
+    # await cl.Message(content="query retrieved").send()
     await cl.Message(content=f"Generated SQL Query:\n```sql\n{sql_query}\n```").send()
 
     # Execute query
@@ -77,7 +87,7 @@ async def main(message: cl.Message):
         # If the result is a list, it's likely from a SELECT query
         # Convert the result to a formatted string
         result_str = "\n".join([str(row) for row in result])
-        await cl.Message(content=f"Query Result:\n```\n{result_str}\n```").send()
+        await cl.Message(content=f"Query Result:\n```sql\n{result_str}\n```").send()
     else:
         # For non-SELECT queries or error messages
         await cl.Message(content=f"Result: {result}").send()
