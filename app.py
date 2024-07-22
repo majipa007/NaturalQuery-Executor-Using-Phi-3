@@ -2,6 +2,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, BitsAndB
 import sqlite3
 import chainlit as cl
 import torch
+import pandas as pd
 
 
 class Text_to_database:
@@ -44,8 +45,9 @@ class Text_to_database:
 
             # Check if the query is a SELECT statement
             if query.strip().upper().startswith("SELECT"):
+                columns = [description[0] for description in self.cursor.description]
                 results = self.cursor.fetchall()
-                return results
+                return columns, results
             else:
                 self.conn.commit()
                 return "Query executed successfully."
@@ -81,13 +83,29 @@ async def main(message: cl.Message):
     await cl.Message(content=f"Generated SQL Query:\n```sql\n{sql_query}\n```").send()
 
     # Execute query
-    result = db.execute_query(sql_query)
 
-    if isinstance(result, list):
-        # If the result is a list, it's likely from a SELECT query
-        # Convert the result to a formatted string
-        result_str = "\n".join([str(row) for row in result])
-        await cl.Message(content=f"Query Result:\n```sql\n{result_str}\n```").send()
+    columns, result = db.execute_query(sql_query)
+
+    await cl.Message(content=f"Query execution complete. Type of result: {type(result)}").send()
+
+    if columns and isinstance(result, list) and len(result) > 0:
+        # Create a pandas DataFrame
+        df = pd.DataFrame(result, columns=columns)
+
+        # Convert DataFrame to string
+        table_str = df.to_string(index=False)
+
+        await cl.Message(content=f"Query Result:\n```\n{table_str}\n```").send()
+
+        # Optionally, you can also send it as a CSV for easy copying
+        csv_str = df.to_csv(index=False)
+        await cl.Message(content="CSV format (for easy copying):",
+                         file=cl.File(name="result.csv", content=csv_str)).send()
+
+    elif columns:
+        await cl.Message(content=f"Query returned no data. Columns: {columns}").send()
     else:
-        # For non-SELECT queries or error messages
         await cl.Message(content=f"Result: {result}").send()
+
+    # Additional debugging information
+    await cl.Message(content=f"Raw result data: {result}").send()
