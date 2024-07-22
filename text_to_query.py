@@ -32,6 +32,3 @@ class Text_to_query:
         ]
         output = self.pipe(messages, **self.generation_args)
         return output[0]['generated_text']
-
-# x = Text_to_query()
-# print(x.query("show me the whole data base"))
