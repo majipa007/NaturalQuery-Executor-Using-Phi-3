@@ -1,0 +1,4 @@
+chainlit~=1.1.306
+torch~=2.3.0
+pandas~=2.2.2
+transformers~=4.41.1
