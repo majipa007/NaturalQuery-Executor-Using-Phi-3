@@ -15,32 +15,33 @@ class Query_execution:
 
             # Check if the query is a SELECT statement
             if query.strip().upper().startswith("SELECT"):
+                columns = [description[0] for description in self.cursor.description]
                 results = self.cursor.fetchall()
-                return results
+                return columns, results
             else:
                 self.conn.commit()
                 return "Query executed successfully."
         except sqlite3.Error as e:
             return f"An error occurred: {e}"
-
-    def __call__(self, *args, **kwargs):
-        print("Welcome to the SQL Query Executor.")
-        print("Type your SQL queries and press Enter to execute.")
-        print("Type 'quit' to exit the program.")
-
-        while True:
-            query = input("\nEnter your SQL query: ")
-            query = self.x.query(query)
-            if query.lower() == 'quit':
-                break
-
-            result = self.execute_query(query)
-            print("Result:")
-            print(result)
-
-        # Close the database connection
-        self.conn.close()
-        print("Database connection closed. Goodbye!")
-
-
-Query_execution()
+#
+#     def __call__(self, *args, **kwargs):
+#         print("Welcome to the SQL Query Executor.")
+#         print("Type your SQL queries and press Enter to execute.")
+#         print("Type 'quit' to exit the program.")
+#
+#         while True:
+#             query = input("\nEnter your SQL query: ")
+#             query = self.x.query(query)
+#             if query.lower() == 'quit':
+#                 break
+#
+#             result = self.execute_query(query)
+#             print("Result:")
+#             print(result)
+#
+#         # Close the database connection
+#         self.conn.close()
+#         print("Database connection closed. Goodbye!")
+#
+#
+# Query_execution()
