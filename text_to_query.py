@@ -18,7 +18,7 @@ class Text_to_query:
             tokenizer=self.tokenizer,
         )
         self.generation_args = {
-            "max_new_tokens": 50,
+            "max_new_tokens": 500,
             "temperature": 0,
             "return_full_text": False,
         }

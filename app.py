@@ -4,6 +4,17 @@ from text_to_query import Text_to_query
 from dbms_integration import Query_execution
 
 
+def create_markdown_table(df):
+    # Create header
+    markdown = "| " + " | ".join(df.columns) + " |\n"
+    # Add separator
+    markdown += "| " + " | ".join(["---" for _ in df.columns]) + " |\n"
+    # Add rows
+    for _, row in df.iterrows():
+        markdown += "| " + " | ".join(str(value) for value in row) + " |\n"
+    return markdown
+
+
 @cl.on_chat_start
 async def start():
     cl.user_session.set("tq", Text_to_query())
@@ -17,7 +28,6 @@ async def start():
         For example, you could ask:
         "Show me all the rows where first name starts with j"
         "Show me all the name and phone numbers of people where first name starts with j"
-        "insert (20, 'Hitman', 'Dark', 'hitman.dark@email.com', '+1-123-223-4567')"
         Let's get started! What would you like to know about your contacts database?
         """
     await cl.Message(content=welcome_message).send()
@@ -41,10 +51,9 @@ async def main(message: cl.Message):
         df = pd.DataFrame(result, columns=columns)
 
         # Convert DataFrame to string
-        table_str = df.to_string(index=False)
+        table_str = create_markdown_table(df)
 
-        await cl.Message(content=f"Query Result:\n```bash\n{table_str}\n```").send()
-
+        await cl.Message(content=f"Query Result:\n\n{table_str}").send()
     elif columns:
         await cl.Message(content=f"Query returned no data. Columns: {columns}").send()
     else:
