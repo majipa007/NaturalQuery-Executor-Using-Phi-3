@@ -1,18 +1,37 @@
-# Text-to-SQL Converter
-
----
+# NaturalQuery Executor
 
 ## Overview
 
-The Text-to-SQL Converter is an advanced natural language processing tool designed to transform plain English queries into SQL commands. This application bridges the gap between human language and database queries, making data access more intuitive and efficient for users without extensive SQL knowledge.
+![image](test.png)
+
+**NaturalQuery Executor** is a sophisticated tool designed to simplify interactions with databases by converting natural language queries into executable SQL commands. It not only generates SQL queries from user inputs but also directly executes them on the connected database and returns the results. This project integrates advanced AI models with database management, offering a seamless way to interact with and manipulate data.
 
 ## Features
 
-- Natural Language Processing: Converts English queries to SQL
-- AI-Powered Model: Utilizes state-of-the-art language models
-- Database Integration: Executes queries on SQLite database
-- Real-time Interaction: Implements Chainlit for interactive user interface
-- User-Friendly Design: Accessible to users with varying levels of technical expertise
+- **Natural Language Processing**: Converts user queries in natural language into SQL commands.
+- **Direct Database Interaction**: Executes SQL queries directly on the database and returns results.
+- **Dynamic Query Execution**: Handles various types of SQL commands including SELECT, INSERT, UPDATE, and DELETE.
+- **User-Friendly Interface**: Provides a conversational interface for easy interaction and query execution.
+
+## Components
+
+### 1. `text_to_query.py`
+
+This module contains the `Text_to_query` class which:
+- Loads and configures an AI model for text-to-SQL conversion.
+- Converts natural language inputs into SQL queries.
+
+### 2. `dbms_integration.py`
+
+This module contains the `Query_execution` class which:
+- Connects to a SQLite database.
+- Executes SQL queries and returns results or success messages.
+
+### 3. `app.py`
+
+This module:
+- Integrates `Text_to_query` and `Query_execution` into a user-friendly application using Chainlit.
+- Handles user interactions, generates SQL queries, executes them, and displays results.
 
 ## Installation
 
@@ -20,8 +39,8 @@ To set up the Text-to-SQL Converter, follow these steps:
 
 1. Clone the repository:
 ```commandline
-git clone git@github.com:majipa007/text-to-SQL.git
-cd text-to-SQL
+git clone https://github.com/majipa007/NaturalQuery-Executor-Using-Phi-3.git
+cd NaturalQuery-Executor-Using-Phi-3
 ```
 
 
