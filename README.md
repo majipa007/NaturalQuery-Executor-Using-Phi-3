@@ -55,7 +55,7 @@ To launch the application:
 
 1. Run the following command:
 ```commandline
-chainlit run chainlit.py -w
+chainlit run app.py -w
 ```
 2. Open a web browser and navigate to `http://localhost:8000`
 
